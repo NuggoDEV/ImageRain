@@ -1,6 +1,9 @@
 #include "main.hpp"
 #include "hooks.hpp"
 
+#include "ModUI/ImageRainFlowCoordinator.hpp"
+#include "questui/shared/QuestUI.hpp"
+
 #include "Utils/ImageManager.hpp"
 
 static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to the modloader upon startup
@@ -31,6 +34,9 @@ extern "C" void setup(ModInfo& info) {
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {
     il2cpp_functions::Init();
+
+    QuestUI::Init();
+    QuestUI::Register::RegisterMainMenuModSettingsFlowCoordinator<ImageRain::UI::ImageRainFlow *>(modInfo, "Image Rain");
 
     getLogger().info("Installing hooks...");
     Hooks::InstallHooks(getLogger());
