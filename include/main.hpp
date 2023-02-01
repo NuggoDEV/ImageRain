@@ -14,4 +14,4 @@
 Configuration& getConfig();
 Logger& getLogger();
 
-static std::string ModDir = "sdcard/ModData/com.beatgames.beatsaber/Mods/ImageRain";
+static std::string ModDir = "sdcard/ModData/com.beatgames.beatsaber/Mods/ImageRain/Images";
