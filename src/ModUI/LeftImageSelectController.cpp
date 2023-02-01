@@ -26,6 +26,9 @@ DEFINE_TYPE(ImageRain::UI, LeftImageSelectController);
     layout##identifier->set_preferredWidth(width);                                          \
     layout##identifier->set_preferredHeight(height)
 
+
+TMPro::TextMeshProUGUI *leftText;
+
 void ImageRain::UI::LeftImageSelectController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
 {
     SetName(this, "Left Side Images");
@@ -35,11 +38,9 @@ void ImageRain::UI::LeftImageSelectController::DidActivate(bool firstActivation,
     const std::string path = ModDir;
 
     auto cont = BeatSaberUI::CreateScrollView(get_transform());
-
-    //auto text = BeatSaberUI::CreateText(cont->get_transform(), "Left Screen!");
-      //  text->set_alignment(TMPro::TextAlignmentOptions::Center);
     
     std::vector<std::string> images = FileUtils::getFiles(path);
+
 
     if (images.size() == 0) 
     {
@@ -49,6 +50,8 @@ void ImageRain::UI::LeftImageSelectController::DidActivate(bool firstActivation,
     }
     else
     {
+        leftText = BeatSaberUI::CreateText(cont->get_transform(), "");
+
         for (int i = 0; i < images.size(); i++) 
         {
             auto image = images.at(i);
@@ -69,10 +72,18 @@ void ImageRain::UI::LeftImageSelectController::DidActivate(bool firstActivation,
             BeatSaberUI::CreateClickableText(levelBarElement->get_transform(), FileUtils::GetFileName(image, true), true, [image]()
             {
                 std::string imgPath = FileUtils::GetFileName(image, false);
-                getModConfig().RightSelected.SetValue(imgPath.c_str());
+                getModConfig().LeftSelected.SetValue(imgPath.c_str());
             });
             levelBarElement->set_minWidth(1.0f);
         }
     }
 
 }
+
+
+void ImageRain::UI::LeftImageSelectController::Update()
+{
+    leftText->SetText("Currently Selected: " + getModConfig().LeftSelected.GetValue());
+    leftText->set_alignment(TMPro::TextAlignmentOptions::Center);
+    leftText->set_fontSize(3.5f);
+}   

@@ -26,19 +26,21 @@ DEFINE_TYPE(ImageRain::UI, RightImageSelectController);
     layout##identifier->set_preferredWidth(width);                                          \
     layout##identifier->set_preferredHeight(height)
 
+
+TMPro::TextMeshProUGUI *rightText;
+
 void ImageRain::UI::RightImageSelectController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
 {
-    SetName(this, "Left Side Images");
+    SetName(this, "Right Side Images");
+
 
     if (!firstActivation) return;
     const std::string path = ModDir;
 
     auto cont = BeatSaberUI::CreateScrollView(get_transform());
-
-    //auto text = BeatSaberUI::CreateText(cont->get_transform(), "Left Screen!");
-      //  text->set_alignment(TMPro::TextAlignmentOptions::Center);
     
     std::vector<std::string> images = FileUtils::getFiles(path);
+
 
     if (images.size() == 0) 
     {
@@ -48,6 +50,8 @@ void ImageRain::UI::RightImageSelectController::DidActivate(bool firstActivation
     }
     else
     {
+        rightText = BeatSaberUI::CreateText(cont->get_transform(), "");
+
         for (int i = 0; i < images.size(); i++) 
         {
             auto image = images.at(i);
@@ -75,3 +79,11 @@ void ImageRain::UI::RightImageSelectController::DidActivate(bool firstActivation
     }
 
 }
+
+
+void ImageRain::UI::RightImageSelectController::Update()
+{
+    rightText->SetText("Currently Selected: " + getModConfig().RightSelected.GetValue());
+    rightText->set_alignment(TMPro::TextAlignmentOptions::Center);
+    rightText->set_fontSize(3.5f);
+}   
