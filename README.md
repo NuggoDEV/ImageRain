@@ -2,6 +2,11 @@
 
 Cool raining images :pogger:
 
+## How to use!
+Go to the directory below and add in images! Afterwards, select the image ingame! (NOTE: if the image isn't a 1:1 ratio then it will look funky!)
+`sdcard/ModData/com.beatgames.beatsaber/Mods/ImageRain/Images`
+
+
 ## Credits
 
 * [zoller27osu](https://github.com/zoller27osu), [Sc2ad](https://github.com/Sc2ad) and [jakibaki](https://github.com/jakibaki) - [beatsaber-hook](https://github.com/sc2ad/beatsaber-hook)
