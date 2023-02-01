@@ -6,7 +6,7 @@ namespace ImageRain::ImageManager
 {
     void ManageImagesPath()
     {
-        std::string path = ModDir + "/Images";
+        std::string path = ModDir;
         if (!std::filesystem::exists(path)) 
         {
             std::filesystem::create_directories(path);

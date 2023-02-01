@@ -29,10 +29,11 @@ void ImageRain::UI::LeftImageSelectController::DidActivate(bool firstActivation,
 {
     SetName(this, "Left Side Images");
 
-    if (!firstActivation) return;
-    const std::string path = ModDir + "/Images";
 
-    auto cont = BeatSaberUI::CreateVerticalLayoutGroup(get_transform());
+    if (!firstActivation) return;
+    const std::string path = ModDir;
+
+    auto cont = BeatSaberUI::CreateScrollView(get_transform());
 
     //auto text = BeatSaberUI::CreateText(cont->get_transform(), "Left Screen!");
       //  text->set_alignment(TMPro::TextAlignmentOptions::Center);
@@ -41,7 +42,9 @@ void ImageRain::UI::LeftImageSelectController::DidActivate(bool firstActivation,
 
     if (images.size() == 0) 
     {
-        BeatSaberUI::CreateText(cont->get_transform(), "No images found!\nMake sure to add images to the path below:\n'sdcard/ModData/com.beatgames.beatsaber/Mods/ImageRain/Images'");
+        auto text = BeatSaberUI::CreateText(cont->get_transform(), "\n\nNo images found!\nMake sure to add images to the path below:\n'sdcard/ModData/com.beatgames.beatsaber/Mods/ImageRain/Images'");
+            text->set_alignment(TMPro::TextAlignmentOptions::Center);
+            text->set_fontSize(3.5f);
     }
     else
     {
