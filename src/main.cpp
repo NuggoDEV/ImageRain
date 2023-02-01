@@ -1,5 +1,6 @@
 #include "main.hpp"
 #include "hooks.hpp"
+#include "modConfig.hpp"
 
 #include "ModUI/ImageRainFlowCoordinator.hpp"
 #include "questui/shared/QuestUI.hpp"
@@ -34,6 +35,8 @@ extern "C" void setup(ModInfo& info) {
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {
     il2cpp_functions::Init();
+
+    getModConfig().Init(modInfo);
 
     QuestUI::Init();
     QuestUI::Register::RegisterMainMenuModSettingsFlowCoordinator<ImageRain::UI::ImageRainFlow *>(modInfo, "Image Rain");
