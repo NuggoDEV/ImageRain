@@ -14,11 +14,12 @@ void ImageRain::UI::ImageRainFlow::DidActivate(bool firstActivation, bool addedT
     if (!firstActivation) return;
 
     settingsController = BeatSaberUI::CreateViewController<ImageRain::UI::SettingsController *>();
-    imageSelectController = BeatSaberUI::CreateViewController<ImageRain::UI::ImageSelectController *>();
+    leftImageSelectController = BeatSaberUI::CreateViewController<ImageRain::UI::LeftImageSelectController *>();
+    rightImageSelectController = BeatSaberUI::CreateViewController<ImageRain::UI::RightImageSelectController *>();
 
     showBackButton = true;
 
-    ProvideInitialViewControllers(settingsController, imageSelectController, nullptr, nullptr, nullptr);
+    ProvideInitialViewControllers(settingsController, leftImageSelectController, rightImageSelectController, nullptr, nullptr);
     SetTitle("Image Rain Settings!", HMUI::ViewController::AnimationType::In);
 }
 
