@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include "modConfig.hpp"
 #include "ModUI/RightImageSelectController.hpp"
 
 #include "questui/shared/BeatSaberUI.hpp"
@@ -61,10 +62,13 @@ void ImageRain::UI::RightImageSelectController::DidActivate(bool firstActivation
             auto sprite = BeatSaberUI::FileToSprite(image);
             Object::DontDestroyOnLoad(sprite);
 
-            auto img = BeatSaberUI::CreateImage(levelBarElement->get_transform(), sprite,  Vector2(0.0f, 0.0f),  Vector2(10.0f, 2.0f));
+            auto img = BeatSaberUI::CreateImage(levelBarElement->get_transform(), sprite, Vector2(0.0f, 0.0f), Vector2(10.0f, 2.0f));
             SetPreferredSize(img, 10.0f, 2.0f);
 
-            BeatSaberUI::CreateText(levelBarElement->get_transform(), FileUtils::GetFileName(image, true), true);
+            BeatSaberUI::CreateClickableText(levelBarElement->get_transform(), FileUtils::GetFileName(image, true), true, [&]()
+            {
+                getModConfig().RightSelected.SetValue(FileUtils::GetFileName(image, false));
+            });
             levelBarElement->set_minWidth(1.0f);
         }
     }
