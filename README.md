@@ -3,9 +3,12 @@
 Cool raining images :pogger:
 
 ## How to use!
-Go to the directory below and add in images! Afterwards, select the image ingame! (NOTE: if the image isn't a 1:1 ratio then it will look funky!)
+Go to the directory below and add in images! Afterwards, select the image ingame!
 `sdcard/ModData/com.beatgames.beatsaber/Mods/ImageRain/Images`
 
+### Notes
+- If the image isn't a 1:1 ratio then it will appear weird ingame!
+- Must be either a `.png` OR `.jpg`
 
 ## Credits
 
