@@ -4,46 +4,114 @@
 
 #include "Utils/FileUtils.hpp"
 
+#include "HMUI/ImageView.hpp"
+using namespace HMUI;
+
+#include "GlobalNamespace/AudioTimeSyncController.hpp"
 #include "GlobalNamespace/BeatEffectSpawner.hpp"
 using namespace GlobalNamespace;
 
-#include "UnityEngine/RectTransform.hpp"
+
+#include "UnityEngine/ParticleSystem.hpp"
+
+#include "UnityEngine/Transform.hpp"
 #include "UnityEngine/GameObject.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
+#include "UnityEngine/Vector2.hpp"
 using namespace UnityEngine;
+using namespace UnityEngine::UI;
 
 #include "questui/shared/BeatSaberUI.hpp"
 using namespace QuestUI;
 
+#define SetPreferredSize(identifier, width, height)                                         \
+    auto layout##identifier = identifier->get_gameObject()->GetComponent<LayoutElement*>(); \
+    if (!layout##identifier)                                                                \
+        layout##identifier = identifier->get_gameObject()->AddComponent<LayoutElement*>();  \
+    layout##identifier->set_preferredWidth(width);                                          \
+    layout##identifier->set_preferredHeight(height)
 
-float speed = 0.1f;
-RectTransform rectTransform;
 
-GameObject *leftImage;
+Transform *leftGO1;
+Transform *leftGO2;
 
-MAKE_AUTO_HOOK_MATCH(BeatEffectSpawner_Start, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self)
+Transform *rightGO1;
+
+
+MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self)
 {
-    BeatEffectSpawner_Start(self);
+    a(self);
 
-    const std::string path = ModDir;
 
-    std::vector<std::string> images = FileUtils::getFiles(path);
+    if (!getModConfig().ModToggle.GetValue()) return;
+
+    std::vector<std::string> images = FileUtils::getFiles(ModDir);
+
     for (int i = 0; i < images.size(); i++)
     {
         auto image = images.at(i);
-        std::string fileName = FileUtils::GetFileName(path, false);
 
-        if (fileName == getModConfig().LeftSelected.GetValue())
+        if (FileUtils::GetFileName(image, false) == getModConfig().LeftSelected.GetValue() && getModConfig().LeftEnabled.GetValue())
         {
-            auto screen = BeatSaberUI::CreateFloatingScreen({0.1, 0.1}, {-5.0, 15.0, -15.0}, )
-            leftImage = BeatSaberUI::CreateImage(screen->get_transform(), image)
+            auto sprite = BeatSaberUI::FileToSprite(image);
+            Object::DontDestroyOnLoad(sprite);
+
+            leftGO1 = GameObject::New_ctor("LeftGameObject1")->get_transform();
+                leftGO1->set_position({-7, 8, 18});
+                leftGO1->set_rotation({0, -25, 0});
+            
+            auto leftImg1 = BeatSaberUI::CreateImage(leftGO1->get_transform(), sprite, {0, 0}, {30, 30});
+                SetPreferredSize(leftImg1, 10.0f, 2.0f);
+
+
+            leftGO2 = GameObject::New_ctor("LeftGameObject2")->get_transform();
+                leftGO2->set_position({-7, 8, 18});
+                leftGO2->set_rotation({0, -25, 0});
+            
+            auto leftImg2 = BeatSaberUI::CreateImage(leftGO2->get_transform(), sprite, {0, 0}, {30, 30});
+                SetPreferredSize(leftImg2, 10.0f, 2.0f);
+
         }
 
+        if (FileUtils::GetFileName(image, false) == getModConfig().RightSelected.GetValue() && getModConfig().RightEnabled.GetValue())
+        {
+            auto sprite = BeatSaberUI::FileToSprite(image);
+            Object::DontDestroyOnLoad(sprite);
+
+            rightGO1 = GameObject::New_ctor("RightGameObject1")->get_transform();
+                rightGO1->set_position({7, 8, 18});
+                rightGO1->set_rotation({0, 25, 0});
+            
+            auto rightImg1 = BeatSaberUI::CreateImage(rightGO1->get_transform(), sprite, {0, 0}, {30, 30});
+                SetPreferredSize(rightImg1, 10.0f, 2.0f);
+        }
     }
 }
 
-MAKE_AUTO_HOOK_MATCH(BeatEffectSpawner_Update, &BeatEffectSpawner::Update, void, BeatEffectSpawner *self)
+MAKE_AUTO_HOOK_MATCH(b, &BeatEffectSpawner::Update, void, BeatEffectSpawner *self)
 {
-    BeatEffectSpawner_Update(self);
+    b(self);
+    auto leftPos1 = leftGO1->get_position();
+    auto leftPos2 = leftGO2->get_position();
 
-    
+    auto rightPos1 = rightGO1->get_position();
+
+    leftGO1->set_position({leftPos1.x, leftPos1.y - 0.01f, leftPos1.z});
+    leftGO2->set_position({leftPos2.x, leftPos2.y - 0.01f});
+
+    rightGO1->set_position({rightPos1.x, rightPos1.y - 0.01f, rightPos1.z});
+
+    if (leftPos1.y < -0.5f)
+    {
+        leftGO1->set_position({leftPos1.x, 8, leftPos1.z});
+    }
+
+    if ()
+
+
+
+    if (rightPos1.y < -0.5f)
+    {
+        rightGO1->set_position({rightPos1.x, 8, rightPos1.z});
+    }
 }

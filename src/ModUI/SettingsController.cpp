@@ -13,7 +13,7 @@ void ImageRain::UI::SettingsController::DidActivate(bool firstActivation, bool a
 
     auto cont = BeatSaberUI::CreateScrollView(get_transform());
 
-    BeatSaberUI::CreateToggle(cont->get_transform(), "Mod Toggle", getModConfig().ModToggle.GetValue(), [](bool value)
+    BeatSaberUI::CreateToggle(cont->get_transform(), "Enable Mod", getModConfig().ModToggle.GetValue(), [](bool value)
     {
         getModConfig().ModToggle.SetValue(value);
     });
