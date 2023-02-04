@@ -16,10 +16,6 @@ using namespace GlobalNamespace;
 #include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
 
 
-#include "UnityEngine/ParticleSystem.hpp"
-#include "UnityEngine/ParticleSystem_MainModule.hpp"
-#include "UnityEngine/ParticleSystem_SubEmittersModule.hpp"
-
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/UI/LayoutElement.hpp"
@@ -43,12 +39,6 @@ Transform *leftGO2;
 Transform *rightGO1;
 
 
-
-//ParticleSystem *test;//ParticleSystem::New_ctor<il2cpp_utils::CreationType::Manual>();
-ParticleSystem *m_System;
-ParticleSystem::Particle *m_Particles;
-float m_Drift = 0.01f;
-
 MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self)
 {
     a(self);
@@ -66,14 +56,7 @@ MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self
 
         if (FileUtils::GetFileName(image, false) == getModConfig().LeftSelected.GetValue() && getModConfig().LeftEnabled.GetValue())
         {
-
-            int numParticlesAlive = m_System->GetParticles(m_Particles, 50);
-            for (int i = 0; i < numParticlesAlive; i++) 
-            {
-                m_Particles[i].set_velocity(Vector3(0, 1, 0) * m_Drift);
-            }
-
-            m_System->SetParticles(m_Particles, numParticlesAlive);
+            auto sprite = BeatSaberUI::FileToSprite(image);
             
 
             /*test->SetParticles(sprite, 50);
