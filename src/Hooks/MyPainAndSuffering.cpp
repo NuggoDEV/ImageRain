@@ -7,9 +7,13 @@
 #include "HMUI/ImageView.hpp"
 using namespace HMUI;
 
+
+#include "GlobalNamespace/PauseMenuManager.hpp"
 #include "GlobalNamespace/AudioTimeSyncController.hpp"
 #include "GlobalNamespace/BeatEffectSpawner.hpp"
 using namespace GlobalNamespace;
+
+#include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
 
 
 #include "UnityEngine/ParticleSystem.hpp"
@@ -31,17 +35,20 @@ using namespace QuestUI;
     layout##identifier->set_preferredWidth(width);                                          \
     layout##identifier->set_preferredHeight(height)
 
-
+ParticleSystem *test;
 Transform *leftGO1;
 Transform *leftGO2;
 
 Transform *rightGO1;
 
+//ParticleSystem *test;//ParticleSystem::New_ctor<il2cpp_utils::CreationType::Manual>();
+
 
 MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self)
 {
     a(self);
-
+    //auto test = GameObject::New_ctor("ab");
+    //test->AddComponent<ParticleSystem *>();
 
     if (!getModConfig().ModToggle.GetValue()) return;
 
@@ -56,7 +63,11 @@ MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self
             auto sprite = BeatSaberUI::FileToSprite(image);
             Object::DontDestroyOnLoad(sprite);
 
-            leftGO1 = GameObject::New_ctor("LeftGameObject1")->get_transform();
+            test->SetParticles(sprite, 50);
+            test->get_transform()->set_localScale({5, 1, 1});
+            test->get_transform()->set_position({-7, 10, 18});
+
+            /*leftGO1 = GameObject::New_ctor("LeftGameObject1")->get_transform();
                 leftGO1->set_position({-7, 8, 18});
                 leftGO1->set_rotation({0, -25, 0});
             
@@ -69,11 +80,11 @@ MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self
                 leftGO2->set_rotation({0, -25, 0});
             
             auto leftImg2 = BeatSaberUI::CreateImage(leftGO2->get_transform(), sprite, {0, 0}, {30, 30});
-                SetPreferredSize(leftImg2, 10.0f, 2.0f);
+                SetPreferredSize(leftImg2, 10.0f, 2.0f);*/
 
         }
 
-        if (FileUtils::GetFileName(image, false) == getModConfig().RightSelected.GetValue() && getModConfig().RightEnabled.GetValue())
+        /*if (FileUtils::GetFileName(image, false) == getModConfig().RightSelected.GetValue() && getModConfig().RightEnabled.GetValue())
         {
             auto sprite = BeatSaberUI::FileToSprite(image);
             Object::DontDestroyOnLoad(sprite);
@@ -84,14 +95,14 @@ MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self
             
             auto rightImg1 = BeatSaberUI::CreateImage(rightGO1->get_transform(), sprite, {0, 0}, {30, 30});
                 SetPreferredSize(rightImg1, 10.0f, 2.0f);
-        }
+        }*/
     }
 }
 
 MAKE_AUTO_HOOK_MATCH(b, &BeatEffectSpawner::Update, void, BeatEffectSpawner *self)
 {
     b(self);
-    auto leftPos1 = leftGO1->get_position();
+    /*auto leftPos1 = leftGO1->get_position();
     auto leftPos2 = leftGO2->get_position();
 
     auto rightPos1 = rightGO1->get_position();
@@ -113,5 +124,19 @@ MAKE_AUTO_HOOK_MATCH(b, &BeatEffectSpawner::Update, void, BeatEffectSpawner *sel
     if (rightPos1.y < -0.5f)
     {
         rightGO1->set_position({rightPos1.x, 8, rightPos1.z});
-    }
+    }*/
+}
+
+MAKE_AUTO_HOOK_MATCH(PauseMenuManager_ShowMenu, &PauseMenuManager::ShowMenu, void, PauseMenuManager *self)
+{
+    PauseMenuManager_ShowMenu(self);
+
+    test->Pause(false);
+}
+
+MAKE_AUTO_HOOK_MATCH(PauseMenuManager_ContinueButtonPressed,  &PauseMenuManager::ContinueButtonPressed, void, PauseMenuManager *self)
+{
+    PauseMenuManager_ContinueButtonPressed(self);
+
+    test->Play(true);
 }
