@@ -17,6 +17,8 @@ using namespace GlobalNamespace;
 
 
 #include "UnityEngine/ParticleSystem.hpp"
+#include "UnityEngine/ParticleSystem_MainModule.hpp"
+#include "UnityEngine/ParticleSystem_SubEmittersModule.hpp"
 
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/GameObject.hpp"
@@ -35,22 +37,26 @@ using namespace QuestUI;
     layout##identifier->set_preferredWidth(width);                                          \
     layout##identifier->set_preferredHeight(height)
 
-ParticleSystem *test;
 Transform *leftGO1;
 Transform *leftGO2;
 
 Transform *rightGO1;
 
-//ParticleSystem *test;//ParticleSystem::New_ctor<il2cpp_utils::CreationType::Manual>();
 
+
+//ParticleSystem *test;//ParticleSystem::New_ctor<il2cpp_utils::CreationType::Manual>();
+ParticleSystem *m_System;
+ParticleSystem::Particle *m_Particles;
+float m_Drift = 0.01f;
 
 MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self)
 {
     a(self);
-    //auto test = GameObject::New_ctor("ab");
-    //test->AddComponent<ParticleSystem *>();
 
     if (!getModConfig().ModToggle.GetValue()) return;
+
+    
+    
 
     std::vector<std::string> images = FileUtils::getFiles(ModDir);
 
@@ -60,12 +66,19 @@ MAKE_AUTO_HOOK_MATCH(a, &BeatEffectSpawner::Start, void, BeatEffectSpawner *self
 
         if (FileUtils::GetFileName(image, false) == getModConfig().LeftSelected.GetValue() && getModConfig().LeftEnabled.GetValue())
         {
-            auto sprite = BeatSaberUI::FileToSprite(image);
-            Object::DontDestroyOnLoad(sprite);
 
-            test->SetParticles(sprite, 50);
+            int numParticlesAlive = m_System->GetParticles(m_Particles, 50);
+            for (int i = 0; i < numParticlesAlive; i++) 
+            {
+                m_Particles[i].set_velocity(Vector3(0, 1, 0) * m_Drift);
+            }
+
+            m_System->SetParticles(m_Particles, numParticlesAlive);
+            
+
+            /*test->SetParticles(sprite, 50);
             test->get_transform()->set_localScale({5, 1, 1});
-            test->get_transform()->set_position({-7, 10, 18});
+            test->get_transform()->set_position({-7, 10, 18});*/
 
             /*leftGO1 = GameObject::New_ctor("LeftGameObject1")->get_transform();
                 leftGO1->set_position({-7, 8, 18});
@@ -131,12 +144,12 @@ MAKE_AUTO_HOOK_MATCH(PauseMenuManager_ShowMenu, &PauseMenuManager::ShowMenu, voi
 {
     PauseMenuManager_ShowMenu(self);
 
-    test->Pause(false);
+    //test->Pause(false);
 }
 
 MAKE_AUTO_HOOK_MATCH(PauseMenuManager_ContinueButtonPressed,  &PauseMenuManager::ContinueButtonPressed, void, PauseMenuManager *self)
 {
     PauseMenuManager_ContinueButtonPressed(self);
 
-    test->Play(true);
+    //test->Play(true);
 }
